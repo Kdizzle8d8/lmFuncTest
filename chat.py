@@ -1,5 +1,6 @@
 import json
 import os
+import textwrap
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -12,7 +13,6 @@ model = "gpt-4o"
 messages=[{"role":"system","content":"You are a helpful assistant"}]
 def chatLoop(functions):
     print("type 'quit()' to exit")
-    print(messages)
     while True:
         if not(messages[-1]["role"]=="function"):
             print(f"\033[94m┌─[{model}]\033[0m")
@@ -35,8 +35,9 @@ def chatLoop(functions):
         else:
             messages.append({"role":"assistant","content":response.choices[0].message.content})
             print("\033[92m┌─Assistant─" + "─" * (74 - 11) + "┐\033[0m")
-            print("\033[92m│  " + response.choices[0].message.content.ljust(72) + "│\033[0m")
+            content_lines = response.choices[0].message.content.split('\n')
+            for content_line in content_lines:
+                wrapped_lines = textwrap.wrap(content_line, width=72)
+                for line in wrapped_lines:
+                    print(f"\033[92m│ {line:<72} │\033[0m")
             print("\033[92m└" + "─" * 74 + "┘\033[0m")
-            
-
-        
